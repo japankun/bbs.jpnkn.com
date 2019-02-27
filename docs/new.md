@@ -7,6 +7,5 @@
 
 ```{"message":"ERROR: This BBSID USED!"}```
 
-!!! Note
-    Twitterの情報は認証にのみ利用する最小権限の読み取り専用を指定しています。もし、連携を解除したい場合はTwitter[アプリと端末設定](https://twitter.com/settings/sessions)より連携を解除してください。解除後も再度認証することで管理画面の利用が再開できます。
+>Twitterの情報は認証にのみ利用する最小権限の読み取り専用を指定しています。もし、連携を解除したい場合はTwitter[アプリと端末設定](https://twitter.com/settings/sessions)より連携を解除してください。解除後も再度認証することで管理画面の利用が再開できます。
 
