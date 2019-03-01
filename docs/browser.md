@@ -6,7 +6,7 @@
 | :----------: | :-----------: | :------: | :------: | :--: |
 |  JaneStyle   |     4.0.0     |   △ ※1   |    ○     | 必須 |
 |   LiveMate   |      exA      |   △ ※1   |    ○     | 必須 |
-| SpeechCastMe | 2.0.1 rev.121 |    ○     |    ○     | 必須 |
+| SpeechCastMe | 2.0.1 rev.122 |    ○     |    ○     | 任意 |
 |   nicocast   |     1.23      |    ○     |    ○     | 必須 |
 |  PCRBrowser  |     0.0.1     |    ○     |    ○     | 任意 |
 |  PCRPlayer   |     0.25      |    ○     |    ○     | 任意 |
