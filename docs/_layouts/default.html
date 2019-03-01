@@ -1,36 +1,82 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>{{ page.title }} - BBS.JPNKN ヘルプ</title>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>{{ page.title }} - BBS.JPNKN ヘルプ</title>
+        <link href="css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/earlyaccess/notosansjp.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:600,800" rel="stylesheet">
+        <link href="css/custom.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1><a href="https://bbs.jpnkn.com/">BBS.JPNKN</a></h1>
-        <h3><a href="https://doc.bbs.jpnkn.com/">ヘルプトップ</a></h2>
-        <ul>
-          <li><a href="./new">new<strong>新しく作る</strong></a></li>
-          <li><a href="./setting">setting<strong>設定する</strong></a></li>
-          <li><a href="./browser">browser<strong>対応状況</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        {{ content }}
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/japankun">JapanKun</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-  </body>
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap-3.0.3.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body class="homepage">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+
+                <!-- Collapsed navigation -->
+                <div class="navbar-header">
+                    <!-- Expander button -->
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="https://bbs.jpnkn.com/">BBS.JPNKN</a>
+                </div>
+
+                <!-- Expanded navigation -->
+                <div class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li >
+                                <a href="/">ヘルプトップ</a>
+                            </li>
+                            <li >
+                                <a href="new/">新しく掲示板を作る</a>
+                            </li>
+                            <li >
+                                <a href="setting/">管理メニュー</a>
+                            </li>
+                            <li >
+                                <a href="browser/">対応ブラウザ</a>
+                            </li>
+                        </ul>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="col-md-3">
+                <div class="bs-sidebar hidden-print affix well" role="complementary">
+                    <ul class="nav bs-sidenav">
+                        <li class="main active"><a href="#bbsjpnkn">BBS.JPNKNヘルプ</a></li>
+                    </ul>
+               </div>
+            </div>
+            <div class="col-md-9" role="main">
+                {{ content }}
+            </div>
+        </div>
+
+
+    </body>
 </html>
