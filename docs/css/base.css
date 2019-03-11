@@ -302,6 +302,8 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
 
 table {
     border: solid 1px #333;
+    width: 100%;
+    margin-bottom: 21px;
 }
 
 table th {
