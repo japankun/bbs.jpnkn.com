@@ -330,3 +330,9 @@ h3 {
     border-left: solid 4px #15a589;
     margin-bottom: .2em;
 }
+
+blockquote {
+    border-left: 5px solid #f39c12;
+    background: #fff3db;
+    font-size: 0.8em;
+}
