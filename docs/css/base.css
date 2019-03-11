@@ -322,3 +322,10 @@ h2 {
     padding: 0.2em;
     border-bottom: solid 1px #333;
 }
+h3 {
+    font-size: 1.2em;
+    padding: .2em 4px;
+    border-bottom: solid 1px #999;
+    border-left: solid 4px #15a589;
+    margin-bottom: .2em;
+}
