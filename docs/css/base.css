@@ -317,6 +317,10 @@ table td {
     padding: 0 1em;
 }
 
+h1 {
+    font-size: 2em;
+}
+
 h2 {
     font-size: 1.5em;
     padding: 0.2em 4px;
