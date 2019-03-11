@@ -319,8 +319,9 @@ table td {
 
 h2 {
     font-size: 1.5em;
-    padding: 0.2em;
+    padding: 0.2em 4px;
     border-bottom: solid 1px #333;
+    border-left: solid 4px #2c3e51;
 }
 h3 {
     font-size: 1.2em;
