@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="Shift_JIS">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <title>Fastインターフェース</title>
+    <style>
+    body {
+        margin: 0;
+    }
+    #attention {
+        background: #f8f8f8;
+        color: #2f3136;
+        padding: .4em;
+        text-align: center;
+    }
+    #res {
+        margin: .2em;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        width: 98%;
+        height: 500px;
+    }
+    </style>
+</head>
+<body bgcolor="#2f3136" text="#f8f8f8">
+    <div id="attention">レスがあるとここに表示されます</div>
+    <div id="res"></div>
+    <div id="bottom"><input type="checkbox" id="tts"><small>読み上げ</small>｜<input type="checkbox" id="scroll" checked><small>スクロール</small>｜</div>
+    <small>音声</small> <select id="voice-select"></select><br>
+    <small>音量</small> <input type="range" id="volume" min="0" max="1" step="0.05" value="0.5">｜<small>速度</small> <input type="range" id="speed" min="0.8" max="2" step="0.05" value="1">｜<input type="button" id="testplay" value="テスト再生" onclick="ttstest()"><br>
+    <input type="checkbox" id="bouyomi"><small>棒読みちゃん連携 <a href="http://doc.bbs.jpnkn.com/fast"><i class="fas fa-question-circle"></i></a></small>
+    <input type="text" id="bouyomi_host" value="localhost" size="14" placeholder="ホスト"> :
+    <input type="text" id="bouyomi_port" value="50002" size="10" placeholder="ポート番号">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+    <script>
+    
+    const voiceSelect = document.querySelector('#voice-select')
+    
+    // Create a client instance
+    client = new Paho.MQTT.Client("bbs.jpnkn.com", 9090, 'peca' + new Date().getTime());
+    
+    // set callback handlers
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
+    
+    // connect the client
+    client.connect({userName:'genkai', password:'7144', onSuccess:onConnect});
+    
+    // called when the client connects
+    function onConnect() {
+      // Once a connection has been made, make a subscription and send a message.
+      console.log("onConnect ch:ALL");
+      client.subscribe("bbs/#");
+      bottom.insertAdjacentHTML('beforeend', '<small>接続状態：<i class="fas fa-satellite-dish"></i> オンライン</small>');
+    }
+    
+    // called when the client loses its connection
+    function onConnectionLost(responseObject) {
+      if (responseObject.errorCode !== 0) {
+        console.log("onConnectionLost:"+responseObject.errorMessage);
+      }
+      bottom.insertAdjacentHTML('beforeend', '<small>接続状態：<i class="fas fa-exclamation-triangle"></i> オフライン</small>');
+    }
+    
+    // called when a message arrives
+    function onMessageArrived(message) {
+      response = JSON.parse(message.payloadString);
+      post = response.body.split('<>');
+      document.getElementById('attention').style.display = 'none';
+      
+      if (document.getElementById('tts').checked) {
+        tts(response.no, post[3]);
+      }
+      
+      res.insertAdjacentHTML('beforeend', '<div><small>'+post[2].substr(5,)+'</small> '+post[3]+'</div>');
+      console.log("onMessageArrived:"+message.payloadString);
+      
+      if (document.getElementById('scroll').checked) {
+        scrolldown();
+       }
+      
+    }
+    
+    function ttstest () {
+      tts("1001", "テスト")
+      return
+    }
+    
+    function tts (no, text) {
+      
+      if (document.querySelector('#bouyomi').checked) {
+        
+        var delim = "<bouyomi>";
+        var command = 0x0001;
+        var speed = parseInt(document.querySelector('#speed').value * 75);
+        var pitch = 100;
+        var volume = parseInt(document.querySelector('#volume').value * 100);
+        var type = 0;
+        var text = "レス" + no + " " + text;
+        
+        const sends = "" + command + delim + speed + delim + pitch + delim + volume + delim + type + delim + text;
+        
+        var socket = new WebSocket('ws://'+ document.querySelector('#bouyomi_host').value +':' + document.querySelector('#bouyomi_port').value +'/');
+        socket.onopen = function() {
+          socket.send(sends);
+        }
+        
+        return;
+        
+       
+      }
+      
+      var uttr = new SpeechSynthesisUtterance('レス'+no)
+      
+      uttr.volume = document.querySelector('#volume').value;
+      uttr.rate = document.querySelector('#speed').value;
+      
+      uttr.voice = speechSynthesis
+      .getVoices()
+      .filter(voice => voice.name === voiceSelect.value)[0]
+      
+      speechSynthesis.speak(uttr);
+      
+      if (80 < text.length) {
+        uttr = new SpeechSynthesisUtterance(text.substr(0, 80)+"、以下省略");
+      } else {
+        uttr = new SpeechSynthesisUtterance(text);
+      }
+      
+      uttr.volume = document.querySelector('#volume').value;
+      uttr.rate = document.querySelector('#speed').value;
+      
+      uttr.voice = speechSynthesis
+      .getVoices()
+      .filter(voice => voice.name === voiceSelect.value)[0]
+      
+      speechSynthesis.speak(uttr);
+      
+      
+    }
+    
+    function scrolldown () {
+      document.getElementById('res').scrollTop = document.getElementById('res').scrollHeight;
+    }
+  
+    function appendVoices() {
+      const voices = speechSynthesis.getVoices()
+      voiceSelect.innerHTML = ''
+      voices.forEach(voice => {
+        //if(!voice.lang.match('ja|en-US')) return
+        const option = document.createElement('option')
+        option.value = voice.name
+        option.text  = `${voice.name} (${voice.lang})`
+        option.setAttribute('selected', voice.default)
+        voiceSelect.appendChild(option)
+      });
+    }
+    
+    appendVoices()
+    
+    speechSynthesis.onvoiceschanged = e => {
+      appendVoices()
+    }
+
+    </script>
+</body>
+</html>
