@@ -10,11 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
       
-    - uses: bluerhinos/phpMQTT@master
-      
     - name: Install dependencies
       run: |
-        composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+        composer install --no-progress --no-suggest --optimize-autoloader
         composer require bluerhinos/phpmqtt
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
