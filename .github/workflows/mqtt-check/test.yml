@@ -15,7 +15,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        composer install --prefer-dist --no-progress --no-suggest
+        composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
         composer require bluerhinos/phpmqtt
         
     - name: Test MQTT
