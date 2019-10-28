@@ -9,7 +9,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-
+      
+    - uses: bluerhinos/phpMQTT
+      
     - name: Install dependencies
       run: |
         composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
