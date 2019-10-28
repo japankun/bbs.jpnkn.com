@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
       
-    - uses: bluerhinos/phpMQTT
+    - uses: bluerhinos/phpMQTT@master
       
     - name: Install dependencies
       run: |
