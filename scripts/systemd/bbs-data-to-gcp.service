@@ -1,0 +1,10 @@
+[Unit]
+Description=bbs.jpnkn.com data backup to GCP
+
+[Service]
+Type=forking
+User=centos
+ExecStart=/home/centos/util/backup_to_gcp.sh
+
+[Install]
+WantedBy=multi-user.target
