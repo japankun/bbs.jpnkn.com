@@ -1,0 +1,8 @@
+[Unit]
+Description=timer bbs.jpnkn.com data backup to GCP
+
+[Timer]
+OnUnitActiveSec=1d
+
+[Install]
+WantedBy=timers.target
