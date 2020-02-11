@@ -2,7 +2,8 @@ FROM php:7.3-apache
 
 RUN a2enmod rewrite && a2enmod cache && a2enmod cache_disk
 
-RUN docker-php-ext-install opcache
+RUN docker-php-ext-install opcache && \
+  docker-php-ext-install zip
 COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 RUN pecl install apcu
