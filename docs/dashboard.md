@@ -1,10 +1,10 @@
 ## bbs.jpnkn.com
 
 ### CPU
-[![graph](https://mackerel.io/embed/public/embed/1RmPTniEOM6rkWGhdVziDWKCYm0Ph6DJOXKMmIFF3ExU3hP4PwDweGv2j93VMl03.svg)](https://mackerel.io/orgs/jpn/hosts/3EJxTSSPDhU/-/graphs/cpu#period=10m)
-### LoadAverage
+[![graph](https://mackerel.io/embed/public/embed/cyWv5jBVsjEByHswHU2fOUg4KJ3xlda7fOC53PijibVam1hDor1RCJ7XyHNcow8i.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/3MyqfXL3sks/-/graphs/cpu#period=1d)
 
-[![graph](https://mackerel.io/embed/public/embed/RcHIQANmZWZ84NBg2k5JX3l4qAb1WnZGTBSZcPBkz5q0YpaTQ4VpoxS0Posozvan.svg)](https://mackerel.io/orgs/jpn/hosts/3EJxTSSPDhU/-/graphs/loadavg#period=10m)
+### LoadAverage
+[![graph](https://mackerel.io/embed/public/embed/NMoYyVHtpss9mFXoRdDQxwCW6WXK43ryHkR6urQKTKPma48iw68z54M0DE2wEp0i.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/3MyqfXL3sks/-/graphs/loadavg#period=1d)
 
 ### Memory
-[![graph](https://mackerel.io/embed/public/embed/yz8ZFmlhpadimUjlWCZktArpBFG6N3gq4V7ZLs2zxOnxPJ9wjzf2u2viiYX9ERYN.svg)](https://mackerel.io/orgs/jpn/hosts/3EJxTSSPDhU/-/graphs/memory#period=10m)
+[![graph](https://mackerel.io/embed/public/embed/3yPCyyMM5JKHzKm0ahCIAieV1YPAOEvAYrfHN3kAG85MIEIeEjmzsa7uOujYGJFF.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/3MyqfXL3sks/-/graphs/memory#period=1d)
