@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - /.github/workflows/dockerimage.yml
+  schedule:
+    - cron: "0 2 * * *"
 
 jobs:
   build:
