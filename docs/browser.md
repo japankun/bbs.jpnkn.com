@@ -11,6 +11,7 @@
 |  PCRBrowser  |     0.0.1     |    ○     |    ○     | 任意 |
 |  PCRPlayer   |     0.25      |    ○     |    ○     | 任意 |
 | PeerstPlayer |    5.1.40     |   △ ※1   |    ○     | 必要 |
+|   Mekacast   |     0.40a     |     ×      |    ×     | 必要 |
 
 - ※1 差分取得未対応
 
