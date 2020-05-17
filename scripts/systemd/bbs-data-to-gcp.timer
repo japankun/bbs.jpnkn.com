@@ -2,7 +2,8 @@
 Description=timer bbs.jpnkn.com data backup to GCP
 
 [Timer]
-OnUnitActiveSec=1d
+#OnUnitActiveSec=1d
+OnCalendar=*-*-* 4:00
 Persistent=true
 
 [Install]
