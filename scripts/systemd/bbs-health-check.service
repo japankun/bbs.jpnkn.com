@@ -1,0 +1,10 @@
+[Unit]
+Description=bbs.jpnkn.com healthcheck
+
+[Service]
+Type=forking
+User=centos
+ExecStart=/home/centos/sys/healthcheck.sh
+
+[Install]
+WantedBy=multi-user.target
