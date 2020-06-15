@@ -1,7 +1,7 @@
 FROM php:7.3-apache
 
 RUN a2enmod rewrite && a2enmod cache && a2enmod cache_disk
-RUN apt-get update && apt-get install -y zlib1g-dev libzip-dev libmemcached-dev
+RUN apt-get update && apt-get install -y zlib1g-dev libzip-dev libmemcached-dev unzip
 
 RUN docker-php-ext-install opcache && \
   docker-php-ext-install zip
