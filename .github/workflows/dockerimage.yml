@@ -2,8 +2,10 @@ name: Docker Image CI
 
 on: 
   push:
-    paths:
-      - /.github/workflows/dockerimage.yml
+    paths: 
+      - '.github/workflows/dockerimage.yml'
+      - 'img/**'
+    
   schedule:
     - cron: "0 2 * * *"
 
