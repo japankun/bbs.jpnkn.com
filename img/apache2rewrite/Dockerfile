@@ -11,12 +11,10 @@ COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # install & setting apcu
 RUN pecl install apcu
-RUN echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
-RUN echo "apc.shm_size=256M" >> /usr/local/etc/php/conf.d/apcu.ini
-RUN echo "apc.entries_hint=2200000" >> /usr/local/etc/php/conf.d/apcu.ini
+COPY apcu.ini /usr/local/etc/php/conf.d/apcu.ini
 
 # install & setting memcached
 RUN pecl install memcached
-RUN echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini
+COPY memcached.ini /local/etc/php/conf.d/memcached.ini
 
 COPY 000-default.conf /etc/apache2/sites-available/
