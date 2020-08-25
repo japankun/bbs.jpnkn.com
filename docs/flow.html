@@ -1,170 +1,1133 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="ja">
 <head>
-    <meta charset="Shift_JIS">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
-    <title>Fastインターフェース - flow</title>
-    <style>
-    body {
-        margin: 0;
-    }
-    #attention {
-        background: #f8f8f8;
-        color: #2f3136;
-        padding: .4em;
-        text-align: center;
-    }
-    #res {
-        margin: .2em;
-        overflow-y: scroll;
-        overflow-x: hidden;
-        width: 98%;
-        height: 500px;
-    }
-    </style>
+  <meta charset="Shift_JIS">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/bootstrap@4.3.1/dist/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
+  <title>Fastインターフェース</title>
+  <style>
+  body {
+      background: #1b1e24;
+      color: #f6f9fc;
+      margin: 0;
+  }
+  #badge {
+    padding: .2em;
+    font-size: .6em;
+    width: 1.2em;
+    text-align: center;
+    background-color: #007bff;
+  }
+  a {
+    color: #fff;
+  }
+  #attention {
+      background: #f8f8f8;
+      color: #2f3136;
+      padding: .4em;
+      text-align: center;
+  }
+  #res {
+      padding-left: 1.2em;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      height: 500px;
+  }
+  #res::-webkit-scrollbar {
+    display: none;
+  }
+  #res a {
+    text-decoration: underline;
+  }
+  .divide {
+    padding-bottom: 4px;
+  }
+  #options {
+    padding: 1em;
+    max-width: 630px;
+  }
+  .control-label {
+    min-width: 120px !important;
+  }
+  .divide {
+    font-size: .8em;
+    line-height: 1em;
+    vertical-align: middle;
+  }
+  .range {
+    height: .8em;
+  }
+  .form-control-sm {
+    margin-top: -.6em;
+    margin-bottom: .6em;
+    height: 2em;
+    padding: .1em .4em;
+  }
+  .toggle {
+    margin-top: -.3em;
+    margin-bottom: .3em;
+    margin-left: 1em;
+  }
+  hr {
+    margin-top: .2em;
+    margin-bottom: 1em;
+    height: 1px;
+    border-color: #ddd;
+  }
+  .media {
+    margin-bottom: 0em;
+  }
+  .highlight {
+    background: #2f3136;
+  }
+  .media-body {
+    margin-left: .2em;
+    margin-bottom: .2em;
+    line-height: 1.2em;
+  }
+  .datetime {
+    padding-top: .1em;
+  }
+
+  @font-face {
+    font-family: "monapo";
+    src: url("https://cdn.bbs.jpnkn.com/fonts/monapo/monapo.woff2") format("woff2"),
+      url("https://cdn.bbs.jpnkn.com/fonts/monapo/monapo.woff") format("woff"),
+      url("https://cdn.bbs.jpnkn.com/fonts/monapo/monapo.ttf") format("ttf");
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "PixelMplus10";
+    src: url("https://cdn.bbs.jpnkn.com/fonts/PixelMplus10-Regular/PixelMplus10-Regular.woff2") format("woff2"),
+      url("https://cdn.bbs.jpnkn.com/fonts/PixelMplus10-Regular/PixelMplus10-Regular.woff") format("woff"),
+      url("https://cdn.bbs.jpnkn.com/fonts/PixelMplus10-Regular/PixelMplus10-Regular.ttf") format("ttf");
+    font-display: swap;
+  }
+
+  .monapo {
+    font-family: "monapo";
+    white-space: pre;
+    font-size: 1em;
+    line-height: 1em;
+  }
+  #paletteset {
+    display: none;
+  }
+  #firstmessage {
+    text-shadow: none;
+    width: 96%;
+    max-width: 600px;
+    padding-right: 1em;
+  }
+  </style>
 </head>
-<body bgcolor="#2f3136" text="#f8f8f8">
-    <div id="attention">レスがあるとここに表示されます</div>
-    <div id="res"></div>
-    <div id="bottom"><input type="checkbox" id="tts"><small>読み上げ</small>｜<input type="checkbox" id="scroll" checked><small>スクロール</small>｜</div>
-    <small>音声</small> <select id="voice-select"></select><br>
-    <small>音量</small> <input type="range" id="volume" min="0" max="1" step="0.05" value="0.5">｜<small>速度</small> <input type="range" id="speed" min="0.8" max="2" step="0.05" value="1">｜<input type="button" id="testplay" value="テスト再生" onclick="ttstest()"><br>
-    <input type="checkbox" id="bouyomi"><small>棒読みちゃん連携 <a href="http://doc.bbs.jpnkn.com/fast"><i class="fas fa-question-circle"></i></a></small>
-    <input type="text" id="bouyomi_host" value="localhost" size="14" placeholder="ホスト"> :
-    <input type="text" id="bouyomi_port" value="50002" size="10" placeholder="ポート番号">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
-    <script>
-    
-    const voiceSelect = document.querySelector('#voice-select')
-    
-    // Create a client instance
-    client = new Paho.MQTT.Client("bbs.jpnkn.com", 9090, 'peca' + new Date().getTime());
-    
+<body>
+  <div id="badge">
+    <a href="/"><i class="fas fa-bold"></i></a>
+  </div>
+  <div id="res">
+    <div class="alert alert-info text-center" id="firstmessage">読み上げを有効にするにはここをクリック</div>
+  </div>
+  <div id="statusbar" class="invisible">
+    <div class="row">
+      <div class="col-12 text-center">
+        <p>
+          現在オフラインです<br>
+          <a class="btn btn-info btn-sm" onclick="connectPaho()">再接続</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  <form id="options">
+    <div id="bottom" class="divide row">
+      <input type="checkbox" id="scroll" checked data-toggle="toggle" data-size="xs" data-on="ON" data-off="OFF">
+      <span class="col-3 small">スクロール</span>
+      <span class="col text-right">
+        <span id="speech-status"></span> 
+        <span id="connection"></span> 
+        <a class="badge badge-info" onclick="togglepalette()" href="#">コマンドパレット <i class="fas fa-comment-dots"></i></a>
+        <a class="badge badge-primary" data-toggle="modal" data-target="#advancesetting" href="#">詳細設定 <i class="fas fa-cog"></i></a>
+      </span>
+    </div>
+    <div class="divide row">
+      <input type="checkbox" id="speech" checked data-toggle="toggle" data-size="xs" data-on="ON" data-off="OFF">
+      <span class="col-3 small">読み上げ</span>
+      <span class="col text-right">
+        音量 <input type="range" id="volume" class="range" min="0" max="1" step="0.05" value="0.5" onchange="ls_save('VoiceVolume', this.value)"> ｜
+        速度 <input type="range" id="speed" class="range" min="0.8" max="2" step="0.05" value="1" onchange="ls_save('VoiceSpeed', this.value)">
+      </span>
+    </div>
+    <hr>
+    <div class="container-fluid">
+      <div class="divide row">
+        <input type="radio" id="tts" name="voice" value="1" class="col-1" checked> <span class="col-4 small">組み込み読み上げ</span>
+        <select id="voice-select" class="form-control form-control-sm col-7"></select>
+      </div>
+      <div class="divide row">
+        <input type="radio" id="bouyomi" name="voice" value="2" class="col-1"> <span class="col-4 small"><u><a href="http://doc.bbs.jpnkn.com/fast">棒読みちゃん連携</a></u></span>
+        <input type="text" id="bouyomi_host" value="localhost" size="14" placeholder="ホスト" class="form-control form-control-sm col">&nbsp;:&nbsp;
+        <input type="text" id="bouyomi_port" value="50002" size="10" placeholder="ポート番号" class="form-control form-control-sm col-2">
+      </div>
+      <div class="divide row">
+        <input type="radio" id="voicetext" name="voice" value="3" class="col-1">
+        <span class="col-4 small"><u><a href="https://cloud.voicetext.jp/webapi">VoiceTextWebAPI</a></u></span>
+        <input type="password" id="vt_key" size="14" placeholder="APIKey" onchange="ls_save('VoiceTextWebAPIKey', this.value)" class="form-control form-control-sm col-4">&nbsp; &nbsp;
+        <button type="button" id="testplay" onclick="ttstest()" class="btn btn-info btn-sm form-control-sm col"><small>テスト <i class="fas fa-volume-up"></i></small></button>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="divide row" id="paletteset">
+        <input type="text" class="form-control form-control-sm col" id="cmdpalette" placeholder="ボイスコマンドパレット" onkeydown="keydown()">&nbsp; &nbsp;
+        <button type="button" id="cmdplay" onclick="palette()" class="btn btn-info btn-sm form-control-sm col-2">再生 <i class="fas fa-volume-up"></i></button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="advancesetting" tabindex="-1" role="dialog" aria-labelledby="advancesetting" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info">
+          <b class="modal-title" id="advancesetting" class=""><i class="fas fa-rocket"></i> 詳細設定</b>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <h6 class="text-secondary">全般</h6>
+          <div class="container-fluid">
+            <div class="divide row text-secondary">
+                <span class="col-5">レス番号を読み上げる</span>
+                <input class="form-control-sm" type="checkbox" id="adv-speak-resnum">
+            </div>
+            <div class="divide row text-secondary">
+                <span class="col-5">投稿日時を表示する</span>
+                <input class="form-control-sm" type="checkbox" id="adv-postdate-show">
+            </div>
+            <div class="divide row text-secondary">
+              <span class="col-5">通知音を鳴らす</span>
+              <input class="form-control-sm" type="checkbox" id="adv-tick-enable">
+            </div>
+            <div class="divide row text-secondary">
+              <span class="col-5">言語設定を端末に任せる</span>
+              <input class="form-control-sm" type="checkbox" id="adv-speak-platform">
+            </div>
+            <div class="divide row text-secondary">
+              <span class="col-5">接続状態を読み上げる</span>
+              <input class="form-control-sm" type="checkbox" id="adv-system-msg">
+            </div>
+          </div>
+          <h6 class="text-secondary">表示</h6>
+          <div class="container-fluid">
+            <div class="divide row text-secondary">
+                <span class="col-5">フォント</span>
+                <select class="form-control form-control-sm col-6" onchange="setfontfamily()" id="adv-font-family">
+                    <option value="0">デフォルト</option>
+                    <option value="1">Noto Sans JP</option>
+                    <option value="2">PixelMplus10</option>
+                    <option value="3">Kosugi Maru</option>
+                    <option value="4">Sawarabi Mincho</option>
+                </select>
+            </div>
+            <div class="divide row text-secondary">
+                <span class="col-5">フォントサイズ</span>
+                <input class="form-control-sm" type="range" id="adv-font-size" min="9" max="24" step="0.5" value="12" onchange="show(this.value, 'adv-font-size,adv-font-size-num-px')">&nbsp;
+                <input type="number" value="12" class="form-control form-control-sm col-2" id="adv-font-size-num-px" onchange="show(this.value, 'adv-font-size,,adv-font-size-num-px')">&nbsp;px
+            </div>
+            <div class="divide row text-secondary">
+                <span class="col-5">フォントを縁取る</span>
+                <input class="form-control-sm" type="checkbox" id="adv-font-border">
+                &nbsp;縁取りの色&nbsp<input class="form-control form-control-sm col-2" type="color" id="adv-font-border-color" onchange="setfontshadow()">
+            </div>
+            <div class="divide row text-secondary">
+              <span class="col-5">アニメーション表示する</span>
+              <input class="form-control-sm" type="checkbox" id="adv-animate">
+            </div>
+            <div class="divide row text-secondary">
+              <span class="col-5">奇数行の背景色を変更する</span>
+              <input class="form-control-sm" type="checkbox" id="adv-highlight">
+            </div>
+            <hr>
+            <div class="divide row text-secondary">
+                <span class="col-5">レス表示エリアの高さ</span>
+                <input type="number" value="120" class="form-control form-control-sm col-2" id="adv-resarea-height">&nbsp;px
+            </div>
+            <div class="divide row text-secondary">
+                <span class="col-5">長文判定</span>
+                <input type="number" value="50" class="form-control form-control-sm col-2" id="adv-maxspeak">&nbsp;文字以上は省略する
+            </div>
+          </div>
+
+          <h6 class="text-secondary">AA判定条件</h6>
+          <div class="container-fluid">
+            <div class="divide row text-secondary">
+                <span class="col-3">本文が</span>
+                <input type="number" value="5" class="form-control form-control-sm col-2" id="adv-maxline">
+                &nbsp;行以上かつ&nbsp;
+                <input type="number" value="50" class="form-control form-control-sm col-2" id="adv-maxtext">
+                &nbsp;文字以上をAAとする
+            </div>
+          </div>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">保存せずに閉じる</button>
+          <button type="button" class="btn btn-primary" onclick="saveadvancedsetting()" data-dismiss="modal">保存して閉じる</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<audio src="https://cdn.bbs.jpnkn.com/etc/att02.wav" preload="auto" id="tick">
+<audio src="https://cdn.bbs.jpnkn.com/etc/offline-s.mp3" preload="auto" id="offline">
+<script type="text/javascript" src="https://unpkg.com/paho-mqtt@1.1.0/paho-mqtt-min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.5.0/js/bootstrap4-toggle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+
+  const vt_api_server = 'http://vtapi.jpnkn.com:8880/';
+  const voiceSelect = document.querySelector('#voice-select');
+  var ls = localStorage;
+  var synth = window.speechSynthesis;
+  var retry = {count:0, ins:null};
+
+  var Fast = {
+    "tts": {
+      "enable": true,
+      "speaking": false,
+      "volume": 0.5,
+      "speed": 1,
+      "voice": 1,
+    },
+    "state": {
+      "online": false,
+    },
+    "conf": {
+      "scroll": true,
+      "vtkey": "",
+    },
+    "adv": {
+      "postdate": true,
+      "maxspeak": 50,
+      "ticksound": false,
+      "fastcast": false,
+      "animate": false,
+      "highlight": false,
+      "speakplatform": false,
+      "systemmsg": true
+    }
+  };
+
+  var vt_key = document.getElementById('vt_key').value = ls.getItem("VoiceTextWebAPIKey");
+
+  if (ls.getItem("VoiceVolume"))
+    Fast.tts.volume = document.getElementById('volume').value = ls.getItem("VoiceVolume");
+  
+  if (ls.getItem("VoiceSpeed"))
+    Fast.tts.speed = document.getElementById('speed').value = ls.getItem("VoiceSpeed");
+
+  if (ls.getItem("fast-adv-maxspeak"))
+    Fast.adv.maxspeak = ls.getItem("fast-adv-maxspeak");
+
+  if (ls.getItem("fast-adv-speak-platform"))
+    Fast.adv.speakplatform = ls.getItem("fast-adv-speak-platform");
+
+  if (ls.getItem("fast-adv-system-msg"))
+    Fast.adv.systemmsg = ls.getItem("fast-adv-system-msg");
+
+
+  var textqueue = [];
+  var client;
+
+  // Create a client instance
+  // connect the client
+  connectPaho();
+
+  function connectPaho () {
+
+    console.log("[FastMQ] 接続試行中です…");
+
+    if (5 < retry.count) {
+
+      $(".tooltip").remove();
+
+      clearInterval(retry.ins);
+      console.log("[FastMQ] 再接続処理を終了しました");
+      retry.count = 0;
+
+      $("#statusbar").addClass("visible");
+      $("#statusbar").removeClass("invisible");
+      
+    }
+
+    if (location.protocol == "https:") {
+      client = new Paho.Client("a.mq.jpnkn.com", 9091, 'peca' + new Date().getTime());
+      client.connect({userName:'genkai', password:'7144', onSuccess:onConnect, reconnect:true, useSSL:true});
+    } else {
+      client = new Paho.Client("bbs.jpnkn.com", 9090, 'peca' + new Date().getTime());
+      client.connect({userName:'genkai', password:'7144', onSuccess:onConnect, reconnect:true});
+    }
+
     // set callback handlers
     client.onConnectionLost = onConnectionLost;
     client.onMessageArrived = onMessageArrived;
-    
-    // connect the client
-    client.connect({userName:'genkai', password:'7144', onSuccess:onConnect});
-    
-    // called when the client connects
-    function onConnect() {
-      // Once a connection has been made, make a subscription and send a message.
-      console.log("onConnect ch:ALL");
-      client.subscribe("bbs/#");
-      bottom.insertAdjacentHTML('beforeend', '<small>接続状態：<i class="fas fa-satellite-dish"></i> オンライン</small>');
-    }
-    
-    // called when the client loses its connection
-    function onConnectionLost(responseObject) {
-      if (responseObject.errorCode !== 0) {
-        console.log("onConnectionLost:"+responseObject.errorMessage);
-      }
-      bottom.insertAdjacentHTML('beforeend', '<small>接続状態：<i class="fas fa-exclamation-triangle"></i> オフライン</small>');
-    }
-    
-    // called when a message arrives
-    function onMessageArrived(message) {
-      response = JSON.parse(message.payloadString);
-      post = response.body.split('<>');
-      document.getElementById('attention').style.display = 'none';
-      
-      if (document.getElementById('tts').checked) {
-        tts(response.no, post[3]);
-      }
-      
-      res.insertAdjacentHTML('beforeend', '<div><small>'+post[2].substr(5,)+'</small> '+post[3]+'</div>');
-      console.log("onMessageArrived:"+message.payloadString);
-      
-      if (document.getElementById('scroll').checked) {
-        scrolldown();
-       }
-      
-    }
-    
-    function ttstest () {
-      tts("1001", "テスト")
-      return
-    }
-    
-    function tts (no, text) {
-      
-      if (document.querySelector('#bouyomi').checked) {
-        
-        var delim = "<bouyomi>";
-        var command = 0x0001;
-        var speed = parseInt(document.querySelector('#speed').value * 75);
-        var pitch = 100;
-        var volume = parseInt(document.querySelector('#volume').value * 100);
-        var type = 0;
-        var text = "レス" + no + " " + text;
-        
-        const sends = "" + command + delim + speed + delim + pitch + delim + volume + delim + type + delim + text;
-        
-        var socket = new WebSocket('ws://'+ document.querySelector('#bouyomi_host').value +':' + document.querySelector('#bouyomi_port').value +'/');
-        socket.onopen = function() {
-          socket.send(sends);
-        }
-        
-        return;
-        
-       
-      }
-      
-      var uttr = new SpeechSynthesisUtterance('レス'+no)
-      
-      uttr.volume = document.querySelector('#volume').value;
-      uttr.rate = document.querySelector('#speed').value;
-      
-      uttr.voice = speechSynthesis
-      .getVoices()
-      .filter(voice => voice.name === voiceSelect.value)[0]
-      
-      speechSynthesis.speak(uttr);
-      
-      if (80 < text.length) {
-        uttr = new SpeechSynthesisUtterance(text.substr(0, 80)+"、以下省略");
-      } else {
-        uttr = new SpeechSynthesisUtterance(text);
-      }
-      
-      uttr.volume = document.querySelector('#volume').value;
-      uttr.rate = document.querySelector('#speed').value;
-      
-      uttr.voice = speechSynthesis
-      .getVoices()
-      .filter(voice => voice.name === voiceSelect.value)[0]
-      
-      speechSynthesis.speak(uttr);
-      
-      
-    }
-    
-    function scrolldown () {
-      document.getElementById('res').scrollTop = document.getElementById('res').scrollHeight;
-    }
+
+    retry.count++;
+
+  }
   
-    function appendVoices() {
-      const voices = speechSynthesis.getVoices()
-      voiceSelect.innerHTML = ''
-      voices.forEach(voice => {
-        //if(!voice.lang.match('ja|en-US')) return
-        const option = document.createElement('option')
-        option.value = voice.name
-        option.text  = `${voice.name} (${voice.lang})`
-        option.setAttribute('selected', voice.default)
-        voiceSelect.appendChild(option)
-      });
-    }
-    
-    appendVoices()
-    
-    speechSynthesis.onvoiceschanged = e => {
-      appendVoices()
+  // called when the client connects
+  function onConnect () {
+
+    if (retry.ins) {
+
+      clearInterval(retry.ins);
+      retry.count = 0;
+
+      if (Fast.adv.systemmsg) {
+        textqueue.push({"text":"　　接続が復帰しました"});
+      }
+
     }
 
-    </script>
+    // Once a connection has been made, make a subscription and send a message.
+    console.log("[FastMQ] onConnect ch:#");
+    client.subscribe("bbs/#");
+    document.getElementById('connection').innerHTML = 
+      '<span class="badge badge-success" data-toggle="tooltip" data-placement="top" id="constatus" title=""><i class="fas fa-satellite-dish"></i> オンライン<span>';
+    document.getElementById('connection').className = 'text-success';
+
+    $(".tooltip").remove();
+
+    $("#statusbar").addClass("invisible");
+    $("#statusbar").removeClass("visible");
+
+  }
+  
+  // called when the client loses its connection
+  function onConnectionLost (responseObject) {
+
+    if (responseObject.errorCode !== 0) {
+      console.log("[FastMQ] onConnectionLost:" + responseObject.errorMessage);
+    }
+
+    document.getElementById('connection').innerHTML =
+      '<span class="badge badge-danger" data-toggle="tooltip" data-placement="top" id="constatus" title="再接続中…"><i class="fas fa-exclamation-triangle"></i> オフライン</span>';
+    document.getElementById('connection').className = 'text-warning';
+
+    if (client)
+      client.unsubscribe("bbs/#");
+    
+    playOfflineSound();
+
+    if (Fast.adv.systemmsg) {
+      textqueue.push({"text":"　　切断を検知しました"});
+    }
+
+    $('#constatus').tooltip('show');
+
+    retry.ins = setInterval(connectPaho, 5000);
+
+  }
+  
+  // called when a message arrives
+  function onMessageArrived (message) {
+
+    if (document.getElementById('speech').checked) {
+      Fast.tts.enable = true;
+    } else {
+      Fast.tts.enable = false;
+    }
+    
+    response = JSON.parse(message.payloadString);
+    post = response.body.split('<>');
+
+    if (Fast.tts.enable) {
+      textqueue.push({"no":response.no, "text":post[3]});
+    } else {
+      playTickSound();
+    }
+
+    addMessage(post);
+    
+    if (Fast.adv.postdate) {
+      $(".datetime").show();
+    } else {
+      $(".datetime").hide();
+    }
+    
+    console.log("[FastMQ] onMessageArrived:" + message.payloadString);
+    
+  }
+
+  function addMessage (post) {
+
+    post[3] = post[3].replace(/(https?:\/\/[\w?=&.\/\-;#~%+]+(?![\w\s?&.\/:#~%"=-]*>))/g,'<a href="$1" target="_blank">$1</a>');
+
+    res.insertAdjacentHTML('beforeend', '<div class="media"><small class="datetime">'
+      + post[2].substr(5,) + '</small><div class="media-body">' + post[3] + '</div></div>');
+
+    if (Fast.adv.fastcast && 0 < textqueue.length) {
+      $(".media:last").hide();
+    } else {
+      $(".media:last").hide();
+
+      if (Fast.adv.animate) {
+        $(".media:last").slideDown("fast", scrolldown);
+      } else {
+        $(".media:last").show(0, scrolldown);
+      }
+    }
+
+    return;
+
+  }
+
+  function ttsqueue () {
+
+    if (synth.speaking) {
+
+      return;
+
+    } else if (textqueue.length && document.getElementById('options').voice.value == "1"){
+
+      playTickSound();
+
+      if (Fast.adv.fastcast && 1 != textqueue.length)
+        $(".media:first").remove();
+
+      var data = textqueue.shift();
+      tts(data.no, data.text);
+
+      if (Fast.adv.fastcast)
+        $(".media:first").show();
+
+      return;
+
+    } else if (document.getElementById('options').voice.value == "1") {
+
+      if (Fast.adv.fastcast)
+        $(".media:first").remove();
+      
+      setWaiting();
+
+      return;
+
+    } else if (textqueue.length && document.getElementById('options').voice.value == "2") {
+      
+      playTickSound();
+
+      var data = textqueue.shift();
+      tts(data.no, data.text);
+      
+      setWaiting();
+
+      return;
+      
+    }
+
+    if (textqueue.length && !document.getElementById('vt_player')) {
+
+      playTickSound();
+      
+      document.getElementById('vt_key').insertAdjacentHTML('beforeend',
+        '<audio id="vt_player" autoplay="false" type="audio/mp3"></audio>');
+      
+      var data = textqueue.shift();
+      tts(data.no, data.text);
+      
+      return;
+      
+    }
+    
+    if (textqueue.length && document.getElementById('vt_player').ended) {
+
+      playTickSound();
+
+      var data = textqueue.shift();
+      tts(data.no, data.text);
+      
+    }
+
+    if (document.getElementById('vt_player') && document.getElementById('vt_player').ended) {
+      document.getElementById('speech-status').innerHTML =
+        '<span class="badge badge badge-light">待機中 <i class="fas fa-frog"></i></span>';
+    }
+    
+    prefetchAPI();
+  
+  }
+  
+  function prefetchAPI () {
+    
+    textqueue.forEach (function (queue) {
+      
+      if (queue.prefetch)
+        return;
+      
+      var link = document.createElement("link");
+      var ttsstyle = ttscmd(queue.no, queue.text);
+      
+      link.setAttribute("rel", "prefetch");
+      link.setAttribute("id", "prefetch" + queue.no);
+      link.setAttribute("href", vt_api_server + vt_key +"/" + encodeURI(ttsstyle.text)
+        + "/" + ttsstyle.volume + "/" + ttsstyle.speed + "/" + ttsstyle.speaker + "/");
+      
+      document.getElementsByTagName('head').item(0).appendChild(link);
+      queue.prefetch = true;
+      
+    });
+    
+  }
+
+  function keydown () {
+    if (window.event.keyCode == 13) palette();
+  }
+
+  function palette () {
+    textqueue.unshift({'no':'', 'text':document.getElementById('cmdpalette').value});
+  }
+
+  function togglepalette () {
+
+    if (document.getElementById('paletteset').style.display !== 'flex') {
+      document.getElementById('paletteset').style.display = 'flex';
+    } else {
+      document.getElementById('paletteset').style.display = 'none';
+    }
+
+  }
+
+  function ttscmd (no, text) {
+  
+    var speed = parseInt(document.getElementById('speed').value * 100);
+    var pitch = 100;
+    var volume = parseInt(document.getElementById('volume').value * 100);
+    var speaker = "hikari";
+    
+    var textcmd = text.match(/(show|haruka|hikari|takeru|santa|bear)\[(.+?)\]/);
+    
+    if (textcmd) {
+      speaker = textcmd[1];
+      text = textcmd[2];
+    }
+    
+    if (no) {
+      text = speaktextcreate(no, text);
+    }
+    
+    return ({"speed":speed, "pitch": pitch, "volume":volume, "speaker": speaker, "text":text});
+  
+  }
+  
+  function ttstest () {
+    
+    if (document.getElementById('speech').checked) {
+      textqueue.push({"no":"1001", "text":"初カキコ…ども…"});
+    } else {
+      playTickSound();
+    }
+
+    const date = new Date();
+    const time = ("0" + date.getHours()).slice(-2) + ":" +
+      ("0" + date.getMinutes()).slice(-2) + ":" +
+      ("0" + date.getSeconds()).slice(-2);
+
+    addMessage(["名無しさん@7144", "sage", "2019/01/01(日) " + time, "初カキコ…ども… ", ""]);
+
+    if (Fast.adv.postdate) {
+      $(".datetime").show();
+    } else {
+      $(".datetime").hide();
+    }
+
+    if (Fast.adv.highlight) {
+      $(".media:nth-child(odd)").addClass("highlight");
+    }
+    
+    return;
+  
+  }
+  
+  function tts (no, text) {
+    
+    var ttsstyle = ttscmd(no, text);
+
+    if (isLargeAsciiArt(ttsstyle.text)) {
+      ttsstyle.text = "アスキーアート";
+    }
+
+    ttsstyle.text = ttsstyle.text.replace(/<br>/g, "");
+
+    if (Fast.adv.maxspeak < ttsstyle.text.length) {
+      ttsstyle.text = ttsstyle.text.substr(0, Fast.adv.maxspeak) + "、以下省略";
+    }
+
+    setSepaking();
+    
+    // VoiceTextWeb API & APIKey
+    if (document.getElementById('options').voice.value == 3
+      && document.getElementById('vt_key').value !== "") {
+
+      console.log("[FastVT] use vt_api");
+      
+      document.getElementById('vt_player').src = vt_api_server + vt_key
+        + "/" + encodeURI(ttsstyle.text) + "/" + ttsstyle.volume
+        + "/" + ttsstyle.speed + "/" + ttsstyle.speaker + "/";
+      
+      if (document.getElementById('prefetch'+ no))
+        document.getElementById('prefetch'+ no).parentNode.removeChild(document.getElementById('prefetch'+ no));
+
+      return;
+    
+    // BouyomiChan
+    } else if (document.getElementById('options').voice.value == "2") {
+      
+      const delim = "<bouyomi>";
+      const sends = ["", 0x0001, ttsstyle.speed, ttsstyle.pitch, ttsstyle.volume, 0, ttsstyle.text];
+
+      var socket = new WebSocket('ws://'+ document.getElementById('bouyomi_host').value +':' + document.getElementById('bouyomi_port').value +'/');
+      socket.onopen = function() {
+        socket.send(sends.join(delim));
+      }
+      
+      return;
+    
+    // Built-in TTS
+    } else {
+
+      uttr = new SpeechSynthesisUtterance(ttsstyle.text);
+      uttr.volume = document.getElementById('volume').value;
+      uttr.rate = document.getElementById('speed').value;
+      uttr.voice = synth
+        .getVoices()
+        .filter(voice => voice.name === voiceSelect.value)[0];
+      
+      synth.speak(uttr);
+
+    }
+
+    return;
+    
+  }
+  
+  function scrolldown () {
+
+    if (document.getElementById('scroll').checked) {
+      document.getElementById('res').scrollTop = document.getElementById('res').scrollHeight + 24;
+    }
+
+    return;
+    
+  }
+
+  function appendVoices() {
+    const voices = synth.getVoices()
+    
+    voiceSelect.innerHTML = '';
+    voices.forEach(voice => {
+      
+      const option = document.createElement('option');
+      option.value = voice.name;
+      option.text  = `${voice.name} (${voice.lang})`;
+      
+      if (voice.lang.match('ja'))
+        option.setAttribute('selected', voice.default);
+      voiceSelect.appendChild(option);
+      
+    });
+  }
+  
+  appendVoices();
+  
+  synth.onvoiceschanged = e => {
+    appendVoices();
+  }
+
+  // Android/iOS 向けにクリックイベントを拾う
+  firstmessage.addEventListener("click", function() {
+
+    $('#firstmessage').remove();
+
+    var jobs = new SpeechSynthesisUtterance();
+    jobs.text = "読み上げが有効になりました";
+
+    if (Fast.adv.speakplatform)
+      jobs.lang = "ja-JP";
+    
+    jobs.volume = document.getElementById('volume').value;
+
+    window.speechSynthesis.speak(jobs);
+
+  });
+
+  function ls_save (key, value) {
+
+    var ls = localStorage;
+    ls.setItem(key, value);
+
+    console.log('[FastKV] Saved:{' + key+':' + value + '}');
+
+  }
+
+  function ls_load () {
+
+    var ls = localStorage;
+
+    if (ls.getItem("fast-adv-maxline")) {
+      document.getElementById("adv-maxline").value = ls.getItem("fast-adv-maxline");
+    }
+
+    if (ls.getItem("fast-adv-maxtext")) {
+      document.getElementById("adv-maxtext").value = ls.getItem("fast-adv-maxtext");
+    }
+
+    if (ls.getItem("fast-adv-speak-resnum") != 0) {
+      document.getElementById("adv-speak-resnum").checked = true;
+    } else {
+      document.getElementById("adv-speak-resnum").checked = false;
+    }
+
+    if (ls.getItem("fast-adv-postdate-show") != 0) {
+      document.getElementById("adv-postdate-show").checked = true;
+      Fast.adv.postdate = true;
+    } else {
+      document.getElementById("adv-postdate-show").checked = false;
+      Fast.adv.postdate = false;
+    }
+
+    if (ls.getItem("fast-adv-tick-enable") != 1) {
+      document.getElementById("adv-tick-enable").checked = false;
+      Fast.adv.ticksound = false;
+    } else {
+      document.getElementById("adv-tick-enable").checked = true;
+      Fast.adv.ticksound = true;
+    }
+
+    if (ls.getItem("fast-adv-speak-platform") != 1) {
+      document.getElementById("adv-speak-platform").checked = false;
+      Fast.adv.speakplatform = false;
+    } else {
+      document.getElementById("adv-speak-platform").checked = true;
+      Fast.adv.speakplatform = true;
+    }
+
+    if (ls.getItem("fast-adv-system-msg") != 1) {
+      document.getElementById("adv-system-msg").checked = false;
+      Fast.adv.systemmsg = false;
+    } else {
+      document.getElementById("adv-system-msg").checked = true;
+      Fast.adv.systemmsg = true;
+    }
+    
+    if (ls.getItem("fast-adv-animate") != 1) {
+      document.getElementById("adv-animate").checked = false;
+      Fast.adv.animate = false;
+    } else {
+      document.getElementById("adv-animate").checked = true;
+      Fast.adv.animate = true;
+    }
+
+    if (ls.getItem("fast-adv-highlight") != 1) {
+      document.getElementById("adv-highlight").checked = false;
+      Fast.adv.highlight = false;
+      $(".media:nth-child(odd)").removeClass("highlight");
+    } else {
+      document.getElementById("adv-highlight").checked = true;
+      Fast.adv.highlight = true;
+      $(".media:nth-child(odd)").addClass("highlight");
+    }
+
+    if (ls.getItem("fast-adv-font-family") != 0) {
+      document.getElementById("adv-font-family").value = ls.getItem("fast-adv-font-family");
+      setfontfamily();
+    } else {
+      document.getElementById("adv-font-family").options[0].selected = true;
+    }
+
+    if (ls.getItem("fast-adv-font-border-color")) {
+      document.getElementById("adv-font-border-color").value = ls.getItem("fast-adv-font-border-color");
+    } else {
+      document.getElementById("adv-font-border-color").value = "#000";
+    }
+
+    if (ls.getItem("fast-adv-font-border") != 0) {
+      document.getElementById("adv-font-border").checked = true;
+      setfontshadow();
+    } else {
+      document.getElementById("adv-font-border").checked = false;
+      $("#res").css("text-shadow", "");
+    }
+
+    if (ls.getItem("fast-adv-maxspeak")) {
+      document.getElementById("adv-maxspeak").value = Fast.adv.maxspeak;
+    } else {
+      document.getElementById("adv-maxspeak").value = 50;
+    }
+
+    if (ls.getItem("fast-adv-resarea-height")) {
+      document.getElementById("adv-resarea-height").value = ls.getItem("fast-adv-resarea-height");
+      $("#res").css("height", "" + ls.getItem("fast-adv-resarea-height") + "px");
+    } else {
+      document.getElementById("adv-resarea-height").value = "500";
+    }
+
+    if (ls.getItem("fast-adv-font-size")) {
+      document.getElementById("adv-font-size").value = ls.getItem("fast-adv-font-size");
+      document.getElementById("adv-font-size-num-px").value = ls.getItem("fast-adv-font-size");
+      $("#res").css("fontSize", "" + ls.getItem("fast-adv-font-size") + "px");
+    } else {
+      document.getElementById("adv-font-size").value = "12";
+      document.getElementById("adv-font-size-num-px").value = "12";
+    }
+
+  }
+
+  function isLargeAsciiArt (text) {
+    
+    const maxline = document.getElementById("adv-maxline").value;
+    const maxtext = document.getElementById("adv-maxtext").value;
+    const maxraito = 0.40;
+    var flg = 0;
+
+    const textline = 1 + (text.match(/<br>/g) || []).length;
+    const textlength = text.length;
+
+    if (maxline <= textline) {
+      flg++;
+    }
+
+    if (maxtext <= textlength) {
+      flg++;
+    }
+
+    if (1 < flg) {
+      console.log("[FastAA] " + textline + "行" + textlength + "文字" + "巨大AAです");
+      return true;
+
+    } else {
+      console.log("[FastAA] " + textline + "行" + textlength + "文字" + "通常レスです");
+    }
+    
+    return false;
+    
+  }
+
+  function saveadvancedsetting () {
+
+    if (document.getElementById("adv-maxline").value) {
+      ls_save("fast-adv-maxline", document.getElementById("adv-maxline").value);
+    } else {
+      ls_save("fast-adv-maxline", 5);
+    }
+
+    if (document.getElementById("adv-maxtext").value) {
+      ls_save("fast-adv-maxtext", document.getElementById("adv-maxtext").value);
+    } else {
+      ls_save("fast-adv-maxtext", 50);
+    }
+
+    if (document.getElementById("adv-resarea-height").value) {
+      ls_save("fast-adv-resarea-height", document.getElementById("adv-resarea-height").value);
+    } else {
+      ls_save("fast-adv-resarea-height", 500);
+    }
+
+    if (document.getElementById("adv-speak-resnum").checked == 1) {
+      ls_save("fast-adv-speak-resnum", 1);
+    } else {
+      ls_save("fast-adv-speak-resnum", 0);
+    }
+
+    if (document.getElementById("adv-postdate-show").checked == 1) {
+      ls_save("fast-adv-postdate-show", 1);
+      Fast.adv.postdate = true;
+      $(".datetime").show();
+    } else {
+      ls_save("fast-adv-postdate-show", 0);
+      Fast.adv.postdate = false;
+      $(".datetime").hide();
+    }
+
+    if (document.getElementById("adv-tick-enable").checked == 1) {
+      ls_save("fast-adv-tick-enable", 1);
+      Fast.adv.ticksound = true;
+    } else {
+      ls_save("fast-adv-tick-enable", 0);
+      Fast.adv.ticksound = false;
+    }
+
+    if (document.getElementById("adv-speak-platform").checked == 1) {
+      ls_save("fast-adv-speak-platform", 1);
+      Fast.adv.speakplatform = true;
+    } else {
+      ls_save("fast-adv-speak-platform", 0);
+      Fast.adv.speakplatform = false;
+    }
+
+    if (document.getElementById("adv-system-msg").checked == 1) {
+      ls_save("fast-adv-system-msg", 1);
+      Fast.adv.systemmsg = true;
+    } else {
+      ls_save("fast-adv-system-msg", 0);
+      Fast.adv.systemmsg = false;
+    }
+
+    if (document.getElementById("adv-animate").checked == 1) {
+      ls_save("fast-adv-animate", 1);
+      Fast.adv.animate = true;
+    } else {
+      ls_save("fast-adv-animate", 0);
+      Fast.adv.animate = false;
+    }
+
+    if (document.getElementById("adv-highlight").checked == 1) {
+      ls_save("fast-adv-highlight", 1);
+      Fast.adv.highlight = true;
+      $(".media:nth-child(odd)").addClass("highlight");
+    } else {
+      ls_save("fast-adv-highlight", 0);
+      Fast.adv.highlight = false;
+      $(".media:nth-child(odd)").removeClass("highlight");
+    }
+
+    if (document.getElementById("adv-font-family").value) {
+      ls_save("fast-adv-font-family", document.getElementById("adv-font-family").value);
+      setfontfamily();
+    } else {
+      ls_save("fast-adv-font-family", 0);
+    }
+
+    if (document.getElementById("adv-font-size").value) {
+      ls_save("fast-adv-font-size", document.getElementById("adv-font-size").value);
+    } else {
+      ls_save("fast-adv-font-size", 16);
+    }
+
+    if (document.getElementById("adv-font-border").checked == 1) {
+      ls_save("fast-adv-font-border", 1);
+      setfontshadow();
+    } else {
+      ls_save("fast-adv-font-border", 0);
+      $("#res").css("text-shadow", "");
+    }
+
+    if (document.getElementById("adv-font-border-color").value) {
+      ls_save("fast-adv-font-border-color", document.getElementById("adv-font-border-color").value);
+    } else {
+      ls_save("fast-adv-font-border-color", "#000");
+    }
+
+    $("#res").css("fontSize", "" + document.getElementById("adv-font-size").value + "px");
+    $("#res").css("height", "" + document.getElementById("adv-resarea-height").value + "px")
+
+    if (document.getElementById("adv-maxspeak").value) {
+      ls_save("fast-adv-maxspeak", document.getElementById("adv-maxspeak").value);
+      Fast.adv.maxspeak = document.getElementById("adv-maxspeak").value;
+    } else {
+      ls_save("fast-adv-maxspeak", 50);
+      Fast.adv.maxspeak = 50;
+    }
+  
+    return;
+
+  }
+
+  function setSepaking () {
+
+    document.getElementById('speech-status').innerHTML = 
+      '<span class="badge badge badge-primary">読上中 <i class="fas fa-volume-up"></i></span>';
+    
+    return;
+
+  }
+
+  function setWaiting () {
+
+    document.getElementById('speech-status').innerHTML =
+      '<span class="badge badge badge-light">待機中 <i class="fas fa-frog"></i></span>';
+    
+    return;
+
+  }
+
+  function playTickSound () {
+
+    if (Fast.adv.ticksound == 1) {
+      document.getElementById("tick").volume = 0.3;
+      document.getElementById("tick").play();
+    }
+
+    return;
+
+  }
+
+  function playOfflineSound () {
+
+    document.getElementById("offline").volume = 0.4;
+    document.getElementById("offline").play();
+
+    return;
+
+  }
+
+  function speaktextcreate (no, text) {
+
+    var ls = localStorage;
+
+    if (ls.getItem("fast-adv-speak-resnum") != 0) {
+      text = "レス"+ no + "\n" + text;
+    }
+
+    return text;
+
+  }
+
+  function show (value, ids) {
+    
+    ids.split(',').forEach(function(id) {
+      document.getElementById(id).value = value;
+    });
+
+    return;
+
+  }
+
+  function setfontfamily () {
+
+    const fonts = ["", "Noto Sans JP", "PixelMplus10", "Kosugi Maru", "Sawarabi Mincho"];
+    var font = document.getElementById("adv-font-family").value;
+    
+    $('#res').css("font-family", fonts[font]);
+    
+    return;
+    
+  }
+
+  function setfontshadow () {
+    
+    var color = document.getElementById("adv-font-border-color").value;
+    $('#res').css("text-shadow", "1px 1px 0 "+ color +",-1px 1px 0 "+ color +",1px -1px 0 "+ color +",-1px -1px 0 "+ color);
+    
+  }
+
+  ls_load();
+
+  setInterval(ttsqueue, 500);
+
+  </script>
+  <link href="https://fonts.googleapis.com/css?family=Kosugi+Maru|Noto+Sans+JP|Sawarabi+Mincho" rel="stylesheet">
 </body>
 </html>
