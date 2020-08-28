@@ -426,6 +426,9 @@
     document.getElementById('connection').innerHTML =
       '<span class="badge badge-danger" data-toggle="tooltip" data-placement="top" id="constatus" title="再接続中…"><i class="fas fa-exclamation-triangle"></i> オフライン</span>';
     document.getElementById('connection').className = 'text-warning';
+    
+    $("#statusbar").addClass("visible");
+    $("#statusbar").removeClass("invisible");
 
     if (client)
       client.unsubscribe("bbs/#");
