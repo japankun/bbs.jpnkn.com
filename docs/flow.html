@@ -137,7 +137,7 @@
   <div id="res">
     <div class="alert alert-info text-center" id="firstmessage">読み上げを有効にするにはここをクリック</div>
   </div>
-  <div class="px-3 invisible" id="statusbar">
+  <div class="px-3 d-none" id="statusbar">
     <div class="rounded bg-secondary py-2 px-2">
       <div class="row no-gutters">
         <div class="text-left col-1">
@@ -377,8 +377,8 @@
       console.log("[FastMQ] 再接続処理を終了しました");
       retry.count = 0;
 
-      $("#statusbar").addClass("visible");
-      $("#statusbar").removeClass("invisible");
+      $("#statusbar").addClass("d-block");
+      $("#statusbar").removeClass("d-none");
       
     }
 
@@ -421,8 +421,8 @@
 
     $(".tooltip").remove();
 
-    $("#statusbar").addClass("invisible");
-    $("#statusbar").removeClass("visible");
+    $("#statusbar").addClass("d-none");
+    $("#statusbar").removeClass("d-block");
 
   }
   
@@ -437,8 +437,8 @@
       '<span class="badge badge-danger" data-toggle="tooltip" data-placement="top" id="constatus" title="再接続中…"><i class="fas fa-exclamation-triangle"></i> オフライン</span>';
     document.getElementById('connection').className = 'text-warning';
     
-    $("#statusbar").addClass("visible");
-    $("#statusbar").removeClass("invisible");
+    $("#statusbar").addClass("d-block");
+    $("#statusbar").removeClass("d-none");
 
     if (client)
       client.unsubscribe("bbs/#");
