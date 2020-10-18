@@ -1,10 +1,14 @@
-## bbs.jpnkn.com
+---
+sort: 8
+---
+
+## サーバーメトリクス
 
 ### CPU
-[![graph](https://mackerel.io/embed/public/embed/cyWv5jBVsjEByHswHU2fOUg4KJ3xlda7fOC53PijibVam1hDor1RCJ7XyHNcow8i.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/3MyqfXL3sks/-/graphs/cpu#period=1d)
+[![graph](https://mackerel.io/embed/public/embed/oCKUOKt9iGagZMABFDTdoKuokqlKONrFowTOZJFkGceMH9xJoqd7tNuRmrL6oTIq.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/3VWcgswHR2s/-/graphs/cpu#period=1d)
 
 ### LoadAverage
-[![graph](https://mackerel.io/embed/public/embed/NMoYyVHtpss9mFXoRdDQxwCW6WXK43ryHkR6urQKTKPma48iw68z54M0DE2wEp0i.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/3MyqfXL3sks/-/graphs/loadavg#period=1d)
+[![graph](https://mackerel.io/embed/public/embed/EiEVpQbwju2v90scc9ILTWAqsTg7zuIHyqfOAH4uSSAcmXpW1yIolbrKDDRJkrZ1.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/3VWcgswHR2s/-/graphs/loadavg#period=1d)
 
 ### Memory
-[![graph](https://mackerel.io/embed/public/embed/3yPCyyMM5JKHzKm0ahCIAieV1YPAOEvAYrfHN3kAG85MIEIeEjmzsa7uOujYGJFF.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/3MyqfXL3sks/-/graphs/memory#period=1d)
+[![graph](https://mackerel.io/embed/public/embed/YJwSBF1C4h5H4mUqegXjH5pn7f6ShkFCmE3Sx02KRGiBrRocCbkB20r8guoMzO6B.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/3VWcgswHR2s/-/graphs/memory#period=1d)
