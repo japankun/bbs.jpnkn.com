@@ -3,3 +3,5 @@ header_pages:
   - setting.md
 
 remote_theme: rundocs/jekyll-rtd-theme
+
+theme: jekyll-theme-cayman
