@@ -1,3 +1,5 @@
 header_pages:
   - new.md
   - setting.md
+
+remote_theme: rundocs/jekyll-rtd-theme
