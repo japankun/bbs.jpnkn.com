@@ -374,6 +374,12 @@
   // TTS queue
   setInterval(ttsqueue, 500);
   
+  // Close window confirmation
+  window.onbeforeunload = function (event) {
+    event = event || window.event; 
+    event.returnValue = '他のページへ移動しますか？';
+  }
+  
   /**
   * Functions
   */
