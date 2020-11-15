@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="ja">
 <head>
@@ -201,7 +200,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="advancesetting" tabindex="-1" role="dialog" aria-labelledby="advancesetting" aria-hidden="true">
+<div class="modal" id="advancesetting" tabindex="-1" role="dialog" aria-labelledby="advancesetting" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header bg-info">
@@ -307,8 +306,11 @@
 <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script>
 
+  // Foolery cache control :D
+  const mqttNodeList = 'https://cdn.bbs.jpnkn.com/io/mq-server.json?t=' + new Date().getTime();
   const vt_api_server = 'http://vtapi.jpnkn.com:8880/';
   const voiceSelect = document.querySelector('#voice-select');
+
   var ls = localStorage;
   var synth = window.speechSynthesis;
   var retry = {count:0, ins:null};
@@ -336,38 +338,49 @@
       "animate": false,
       "highlight": false,
       "speakplatform": false,
-      "systemmsg": true
+      "speakresnum": true,
+      "systemmsg": true,
+      "speakmaxline": 5,
+      "speakmaxtext": 50,
+      "fontfamily": "",
+      "fontsize": 12,
+      "fontboadercolor": "#000",
+      "fontshadow": false,
+      "resareaheight": "500",
     }
   };
 
+  // Setting loader
+  ls_load();
+
   var vt_key = document.getElementById('vt_key').value = ls.getItem("VoiceTextWebAPIKey");
-
-  if (ls.getItem("VoiceVolume"))
-    Fast.tts.volume = document.getElementById('volume').value = ls.getItem("VoiceVolume");
-  
-  if (ls.getItem("VoiceSpeed"))
-    Fast.tts.speed = document.getElementById('speed').value = ls.getItem("VoiceSpeed");
-
-  if (ls.getItem("fast-adv-maxspeak"))
-    Fast.adv.maxspeak = ls.getItem("fast-adv-maxspeak");
-
-  if (ls.getItem("fast-adv-speak-platform"))
-    Fast.adv.speakplatform = ls.getItem("fast-adv-speak-platform");
-
-  if (ls.getItem("fast-adv-system-msg"))
-    Fast.adv.systemmsg = ls.getItem("fast-adv-system-msg");
-
-
   var textqueue = [];
-  var client;
+  var client, mqttServer;
+  
+  // Request MQTT server list
+  $.get(mqttNodeList, function(serverList) {
+    
+    if (location.protocol == "https:") {
+      var nodes = serverList.mq.filter(node => node.secure == true);
+    } else {
+      var nodes = serverList.mq;
+    }
 
-  // Create a client instance
-  // connect the client
-  connectPaho();
+    mqttServer = nodes[getRandomInt(0, nodes.length)];
+    connectPaho();
+    
+  });
+
+  // TTS queue
+  setInterval(ttsqueue, 500);
+  
+  /**
+  * Functions
+  */
 
   function connectPaho () {
 
-    console.log("[FastMQ] 接続試行中です…");
+    console.log("[FastMQ] "+ mqttServer.node + ":" + mqttServer.port +" に接続試行中です…");
 
     if (5 < retry.count) {
 
@@ -382,13 +395,8 @@
       
     }
 
-    if (location.protocol == "https:") {
-      client = new Paho.Client("a.mq.jpnkn.com", 9091, 'peca' + new Date().getTime());
-      client.connect({userName:'genkai', password:'7144', onSuccess:onConnect, reconnect:true, useSSL:true});
-    } else {
-      client = new Paho.Client("bbs.jpnkn.com", 9090, 'peca' + new Date().getTime());
-      client.connect({userName:'genkai', password:'7144', onSuccess:onConnect, reconnect:true});
-    }
+    client = new Paho.Client(mqttServer.node, mqttServer.port, 'peca' + new Date().getTime());
+    client.connect({userName:'genkai', password:'7144', onSuccess:onConnect, reconnect:true, useSSL:mqttServer.secure});
 
     // set callback handlers
     client.onConnectionLost = onConnectionLost;
@@ -646,9 +654,17 @@
   }
   
   function ttstest () {
+
+    const copipe = [
+      {"no": "1001", "text":"初カキコ…ども…"},
+      {"no": "1001", "text":"アストラギウス銀河を二分するギルガメスとバララントの陣営は互いに軍を形成し、もはや開戦の理由など誰もわからなくなった銀河規模の戦争を100年間継続していた。"},
+      {"no": "1001", "text": "そうだこれは夢なんだ ぼくは今、夢を見ているんだ"}
+    ]
+
+    var testtext = copipe[getRandomInt(0, copipe.length)];
     
     if (document.getElementById('speech').checked) {
-      textqueue.push({"no":"1001", "text":"初カキコ…ども…"});
+      textqueue.push(testtext);
     } else {
       playTickSound();
     }
@@ -656,9 +672,9 @@
     const date = new Date();
     const time = ("0" + date.getHours()).slice(-2) + ":" +
       ("0" + date.getMinutes()).slice(-2) + ":" +
-      ("0" + date.getSeconds()).slice(-2);
+      ("0" + date.getSeconds()).slice(-2) + ".00";
 
-    addMessage(["名無しさん@7144", "sage", "2019/01/01(日) " + time, "初カキコ…ども… ", ""]);
+    addMessage(["名無しさん@7144", "sage", "2019/01/01(日) " + time, testtext.text, ""]);
 
     if (Fast.adv.postdate) {
       $(".datetime").show();
@@ -799,18 +815,45 @@
 
     var ls = localStorage;
 
+    // nicocast mode?
+    Fast.adv.fastcast = false;
+
+    if (ls.getItem("ERS")) {
+      ls_load_fast();
+      return;
+    }
+
+    if (ls.getItem("VoiceVolume"))
+      Fast.tts.volume = document.getElementById('volume').value = ls.getItem("VoiceVolume");
+
+    if (ls.getItem("VoiceSpeed"))
+      Fast.tts.speed = document.getElementById('speed').value = ls.getItem("VoiceSpeed");
+
+    if (ls.getItem("fast-adv-maxspeak"))
+      Fast.adv.maxspeak = ls.getItem("fast-adv-maxspeak");
+
+    if (ls.getItem("fast-adv-speak-platform"))
+      Fast.adv.speakplatform = ls.getItem("fast-adv-speak-platform");
+
+    if (ls.getItem("fast-adv-system-msg"))
+      Fast.adv.systemmsg = ls.getItem("fast-adv-system-msg");
+
     if (ls.getItem("fast-adv-maxline")) {
       document.getElementById("adv-maxline").value = ls.getItem("fast-adv-maxline");
+      Fast.adv.maxline = ls.getItem("fast-adv-maxline");
     }
 
     if (ls.getItem("fast-adv-maxtext")) {
       document.getElementById("adv-maxtext").value = ls.getItem("fast-adv-maxtext");
+      Fast.adv.maxtext = ls.getItem("fast-adv-maxtext");
     }
 
     if (ls.getItem("fast-adv-speak-resnum") != 0) {
       document.getElementById("adv-speak-resnum").checked = true;
+      Fast.adv.speakresnum = true;
     } else {
       document.getElementById("adv-speak-resnum").checked = false;
+      Fast.adv.speakresnum = false;
     }
 
     if (ls.getItem("fast-adv-postdate-show") != 0) {
@@ -865,6 +908,7 @@
 
     if (ls.getItem("fast-adv-font-family") != 0) {
       document.getElementById("adv-font-family").value = ls.getItem("fast-adv-font-family");
+      Fast.adv.fontfamily = ls.getItem("fast-adv-font-family");
       setfontfamily();
     } else {
       document.getElementById("adv-font-family").options[0].selected = true;
@@ -872,15 +916,19 @@
 
     if (ls.getItem("fast-adv-font-border-color")) {
       document.getElementById("adv-font-border-color").value = ls.getItem("fast-adv-font-border-color");
+      Fast.adv.fontboadercolor = ls.getItem("fast-adv-font-border-color");
     } else {
       document.getElementById("adv-font-border-color").value = "#000";
+      Fast.adv.fontboadercolor = "#000";
     }
 
     if (ls.getItem("fast-adv-font-border") != 0) {
       document.getElementById("adv-font-border").checked = true;
+      Fast.adv.fontshadow = true;
       setfontshadow();
     } else {
       document.getElementById("adv-font-border").checked = false;
+      Fast.adv.fontshadow = false;
       $("#res").css("text-shadow", "");
     }
 
@@ -892,6 +940,7 @@
 
     if (ls.getItem("fast-adv-resarea-height")) {
       document.getElementById("adv-resarea-height").value = ls.getItem("fast-adv-resarea-height");
+      Fast.adv.resareaheight = ls.getItem("fast-adv-resarea-height");
       $("#res").css("height", "" + ls.getItem("fast-adv-resarea-height") + "px");
     } else {
       document.getElementById("adv-resarea-height").value = "500";
@@ -900,11 +949,138 @@
     if (ls.getItem("fast-adv-font-size")) {
       document.getElementById("adv-font-size").value = ls.getItem("fast-adv-font-size");
       document.getElementById("adv-font-size-num-px").value = ls.getItem("fast-adv-font-size");
+      Fast.adv.fontsize = ls.getItem("fast-adv-font-size");
       $("#res").css("fontSize", "" + ls.getItem("fast-adv-font-size") + "px");
     } else {
       document.getElementById("adv-font-size").value = "12";
       document.getElementById("adv-font-size-num-px").value = "12";
+      Fast.adv.fontsize = 12;
     }
+
+  }
+
+  function ls_load_fast () {
+
+    if (isAvailableERS()) {
+
+      Fast = JSON.parse(ls.getItem("ERS"));
+
+      if (Fast.tts.volume)
+        document.getElementById('volume').value = Fast.tts.volume;
+      
+      if (Fast.tts.speed)
+        document.getElementById('speed').value = Fast.tts.speed;
+      
+      if (Fast.adv.maxline)
+        document.getElementById("adv-maxline").value = Fast.adv.maxline;
+
+      if (Fast.adv.maxtext)
+        document.getElementById("adv-maxtext").value = Fast.adv.maxtext;
+
+      if (Fast.adv.speakresnum != 0) {
+        document.getElementById("adv-speak-resnum").checked = true;
+      } else {
+        document.getElementById("adv-speak-resnum").checked = false;
+      }
+
+      if (Fast.adv.postdate != 0) {
+        document.getElementById("adv-postdate-show").checked = true;
+      } else {
+        document.getElementById("adv-postdate-show").checked = false;
+      }
+
+      if (Fast.adv.ticksound != 1) {
+        document.getElementById("adv-tick-enable").checked = false;
+      } else {
+        document.getElementById("adv-tick-enable").checked = true;
+      }
+
+      if (Fast.adv.speakplatform != 1) {
+        document.getElementById("adv-speak-platform").checked = false;
+      } else {
+        document.getElementById("adv-speak-platform").checked = true;
+      }
+
+      if (Fast.adv.systemmsg != 1) {
+        document.getElementById("adv-system-msg").checked = false;
+      } else {
+        document.getElementById("adv-system-msg").checked = true;
+      }
+
+      if (Fast.adv.animate != 1) {
+        document.getElementById("adv-animate").checked = false;
+      } else {
+        document.getElementById("adv-animate").checked = true;
+      }
+
+      if (Fast.adv.highlight != 1) {
+        document.getElementById("adv-highlight").checked = false;
+        $(".media:nth-child(odd)").removeClass("highlight");
+      } else {
+        document.getElementById("adv-highlight").checked = true;
+        $(".media:nth-child(odd)").addClass("highlight");
+      }
+
+      if (Fast.adv.fontfamily != 0) {
+        document.getElementById("adv-font-family").value = ls.getItem("fast-adv-font-family");
+        setfontfamily();
+      } else {
+        document.getElementById("adv-font-family").options[0].selected = true;
+      }
+
+      if (Fast.adv.fontboadercolor) {
+        document.getElementById("adv-font-border-color").value = ls.getItem("fast-adv-font-border-color");
+      } else {
+        document.getElementById("adv-font-border-color").value = "#000";
+      }
+
+      if (Fast.adv.fontshadow != 0) {
+        document.getElementById("adv-font-border").checked = true;
+        setfontshadow();
+      } else {
+        document.getElementById("adv-font-border").checked = false;
+        $("#res").css("text-shadow", "");
+      }
+
+      if (Fast.adv.maxspeak) {
+        document.getElementById("adv-maxspeak").value = Fast.adv.maxspeak;
+      } else {
+        document.getElementById("adv-maxspeak").value = 50;
+      }
+
+      if (Fast.adv.resareaheight) {
+        document.getElementById("adv-resarea-height").value = Fast.adv.resareaheight;
+        $("#res").css("height", "" + Fast.adv.resareaheight + "px");
+      } else {
+        document.getElementById("adv-resarea-height").value = "500";
+      }
+
+      if (Fast.adv.fontsize) {
+        document.getElementById("adv-font-size").value = Fast.adv.fontsize;
+        document.getElementById("adv-font-size-num-px").value = Fast.adv.fontsize;
+        $("#res").css("fontSize", "" + Fast.adv.fontsize + "px");
+      } else {
+        document.getElementById("adv-font-size").value = "12";
+        document.getElementById("adv-font-size-num-px").value = "12";
+      }
+
+    }
+
+  }
+
+  function ls_save_fast () {
+
+    ls.setItem("ERS", JSON.stringify(Fast));
+
+  }
+
+  function isAvailableERS () {
+
+    if (ls.getItem("ERS")) {
+      return true;
+    }
+
+    return false;
 
   }
 
@@ -939,6 +1115,8 @@
   }
 
   function saveadvancedsetting () {
+
+    ls_save("fast-adv-fastcast", false);
 
     if (document.getElementById("adv-maxline").value) {
       ls_save("fast-adv-maxline", document.getElementById("adv-maxline").value);
@@ -1053,6 +1231,8 @@
       ls_save("fast-adv-maxspeak", 50);
       Fast.adv.maxspeak = 50;
     }
+
+    ls_save_fast();
   
     return;
 
@@ -1136,9 +1316,14 @@
     
   }
 
-  ls_load();
+  function getRandomInt (min, max) {
 
-  setInterval(ttsqueue, 500);
+    min = Math.ceil(min);
+    max = Math.floor(max);
+
+    return Math.floor(Math.random() * (max - min) + min);
+
+  }
 
   </script>
   <link href="https://fonts.googleapis.com/css?family=Kosugi+Maru|Noto+Sans+JP|Sawarabi+Mincho" rel="stylesheet">
