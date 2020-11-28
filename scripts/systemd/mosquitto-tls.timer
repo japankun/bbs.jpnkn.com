@@ -1,0 +1,9 @@
+[Unit]
+Description=Timer mosquitto-tls restart
+
+[Timer]
+OnCalendar=Mon *-*-* 07:55:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
