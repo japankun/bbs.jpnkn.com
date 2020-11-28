@@ -1,0 +1,9 @@
+[Unit]
+Description=mosquitto-tls restart
+
+[Service]
+Type=forking
+ExecStart=/home/centos/sys/reload-mosquitto.sh
+
+[Install]
+WantedBy=multi-user.target
