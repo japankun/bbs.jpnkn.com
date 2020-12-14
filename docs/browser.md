@@ -33,6 +33,6 @@ sort: 5
 |    PCRBrowser   | application/x-www-form-urlencoded |    ○     |   ○   |
 |    PCRPlayer    | application/x-www-form-urlencoded |    ○     |   ○   |
 |   PeerstPlayer  |               不明                |    ×     |   ×   |
-|     unacast     | application/x-www-form-urlencoded |    ○     |   ○   |
-| pasta04/unacast |               不明                |    ○     |   ○   |
+|     unacast     |                 -                 |    ○     |   ○   |
+| pasta04/unacast |                 -                 |    ○     |   ○   |
 
