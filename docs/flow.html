@@ -141,12 +141,12 @@
   <div id="res">
     <div class="alert alert-secondary text-center firstalert" id="firstmessage">
         <div class="row">
-            <div class="col-8 text-left small">
-                <strong>ブラウザでの読み上げを有効にするにはクリックが必要です</strong><br>
-                <small>テキスト読み上げを有効にしてもよろしいですか？</small>
+            <div class="col-8 text-left small px-1">
+                <strong>読み上げを有効にするにはクリックが必要です</strong><br>
+                <small>読み上げを有効にしてもよろしいですか？</small>
             </div>
-            <div class="col-4 my-auto text-right">
-                <button type="button" class="btn btn-success btn-sm mx-2" id="speakenable">許可</button>
+            <div class="col-4 my-auto text-right px-0">
+                <button type="button" class="btn btn-success btn-sm" id="speakenable">許可</button>
                 <button type="button" class="btn btn-outline-secondary btn-sm mx-2" id="speaklater">後で</button>
             </div>
         </div>
@@ -829,12 +829,14 @@
     window.speechSynthesis.speak(jobs);
 
     $('#speakmin').toggle();
+    $('#speech').bootstrapToggle('on');
 
   });
 
   speaklater.addEventListener("click", function () {
     $('#firstmessage').toggle();
     $('#speakmin').html('<span class="badge badge badge-warning" id="speakable">権限なし</span>');
+    $('#speech').bootstrapToggle('off');
   });
 
   speakmin.addEventListener("click", function () {
