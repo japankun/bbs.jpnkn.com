@@ -127,6 +127,11 @@
   #statusbar {
     max-width: 630px;
   }
+  .firstalert {
+    color: #222;
+    background: #fff;
+    border: solid 1px #6e84d2;
+  }
   </style>
 </head>
 <body>
@@ -134,7 +139,18 @@
     <a href="/"><i class="fas fa-bold"></i></a>
   </div>
   <div id="res">
-    <div class="alert alert-info text-center" id="firstmessage">読み上げを有効にするにはここをクリック</div>
+    <div class="alert alert-secondary text-center firstalert" id="firstmessage">
+        <div class="row">
+            <div class="col-8 text-left small">
+                <strong>ブラウザでの読み上げを有効にするにはクリックが必要です</strong><br>
+                <small>テキスト読み上げを有効にしてもよろしいですか？</small>
+            </div>
+            <div class="col-4 my-auto text-right">
+                <button type="button" class="btn btn-success btn-sm mx-2" id="speakenable">許可</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm mx-2" id="speaklater">後で</button>
+            </div>
+        </div>
+    </div>
   </div>
   <div class="px-3 d-none" id="statusbar">
     <div class="rounded bg-secondary py-2 px-2">
@@ -158,6 +174,7 @@
       <input type="checkbox" id="scroll" checked data-toggle="toggle" data-size="xs" data-on="ON" data-off="OFF">
       <span class="col-3 small">スクロール</span>
       <span class="col text-right">
+        <span id="speakmin"></span>
         <span id="speech-status"></span> 
         <span id="connection"></span> 
         <a class="badge badge-info" onclick="togglepalette()" href="#">コマンドパレット <i class="fas fa-comment-dots"></i></a>
@@ -179,13 +196,13 @@
         <select id="voice-select" class="form-control form-control-sm col-7"></select>
       </div>
       <div class="divide row">
-        <input type="radio" id="bouyomi" name="voice" value="2" class="col-1"> <span class="col-4 small"><u><a href="http://doc.bbs.jpnkn.com/fast">棒読みちゃん連携</a></u></span>
+        <input type="radio" id="bouyomi" name="voice" value="2" class="col-1"> <span class="col-4 small"><u><a href="http://doc.bbs.jpnkn.com/fast" target="_blank">棒読みちゃん連携</a></u></span>
         <input type="text" id="bouyomi_host" value="localhost" size="14" placeholder="ホスト" class="form-control form-control-sm col">&nbsp;:&nbsp;
         <input type="text" id="bouyomi_port" value="50002" size="10" placeholder="ポート番号" class="form-control form-control-sm col-2">
       </div>
       <div class="divide row">
         <input type="radio" id="voicetext" name="voice" value="3" class="col-1">
-        <span class="col-4 small"><u><a href="https://cloud.voicetext.jp/webapi">VoiceTextWebAPI</a></u></span>
+        <span class="col-4 small"><u><a href="https://cloud.voicetext.jp/webapi" target="_blank" rel="noopener">VoiceTextWebAPI</a></u></span>
         <input type="password" id="vt_key" size="14" placeholder="APIKey" onchange="ls_save('VoiceTextWebAPIKey', this.value)" class="form-control form-control-sm col-4">&nbsp; &nbsp;
         <button type="button" id="testplay" onclick="ttstest()" class="btn btn-info btn-sm form-control-sm col"><small>テスト <i class="fas fa-volume-up"></i></small></button>
       </div>
@@ -233,6 +250,10 @@
               <span class="col-5">接続状態を読み上げる</span>
               <input class="form-control-sm" type="checkbox" id="adv-system-msg">
             </div>
+            <div class="divide row text-secondary">
+                <span class="col-5">閉じるときに警告する</span>
+                <input class="form-control-sm" type="checkbox" id="adv-system-close">
+              </div>
           </div>
           <h6 class="text-secondary">表示</h6>
           <div class="container-fluid">
@@ -306,9 +327,9 @@
 <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script>
 
-  // Foolery cache control :D
+  // foolery cache control :D
   const mqttNodeList = 'https://cdn.bbs.jpnkn.com/io/mq-server.json?t=' + new Date().getTime();
-  const vt_api_server = 'http://vtapi.jpnkn.com:8880/';
+  const vt_api_server = 'https://vt.api.jpnkn.com/';
   const voiceSelect = document.querySelector('#voice-select');
 
   var ls = localStorage;
@@ -347,6 +368,7 @@
       "fontboadercolor": "#000",
       "fontshadow": false,
       "resareaheight": "500",
+      "systemclose": true
     }
   };
 
@@ -354,9 +376,10 @@
   ls_load();
 
   var vt_key = document.getElementById('vt_key').value = ls.getItem("VoiceTextWebAPIKey");
+
   var textqueue = [];
   var client, mqttServer;
-  
+
   // Request MQTT server list
   $.get(mqttNodeList, function(serverList) {
     
@@ -373,13 +396,7 @@
 
   // TTS queue
   setInterval(ttsqueue, 500);
-  
-  // Close window confirmation
-  window.onbeforeunload = function (event) {
-    event = event || window.event; 
-    event.returnValue = '他のページへ移動しますか？';
-  }
-  
+
   /**
   * Functions
   */
@@ -792,20 +809,36 @@
   }
 
   // Android/iOS 向けにクリックイベントを拾う
-  firstmessage.addEventListener("click", function() {
+  // Chrome系でもクリックイベントを取ることが必要になった
+  speakenable.addEventListener("click", function() {
 
-    $('#firstmessage').remove();
+    $('#firstmessage').toggle();
 
     var jobs = new SpeechSynthesisUtterance();
     jobs.text = "読み上げが有効になりました";
+    jobs.rate = 1.1;
+
+    jobs.voice = synth
+        .getVoices()
+        .filter(voice => voice.name === voiceSelect.value)[0];
 
     if (Fast.adv.speakplatform)
       jobs.lang = "ja-JP";
     
     jobs.volume = document.getElementById('volume').value;
-
     window.speechSynthesis.speak(jobs);
 
+    $('#speakmin').toggle();
+
+  });
+
+  speaklater.addEventListener("click", function () {
+    $('#firstmessage').toggle();
+    $('#speakmin').html('<span class="badge badge badge-warning" id="speakable">権限なし</span>');
+  });
+
+  speakmin.addEventListener("click", function () {
+    $('#firstmessage').toggle();
   });
 
   function ls_save (key, value) {
@@ -843,6 +876,9 @@
 
     if (ls.getItem("fast-adv-system-msg"))
       Fast.adv.systemmsg = ls.getItem("fast-adv-system-msg");
+
+    if (ls.getItem("fast-adv-system-close"))
+      Fast.adv.systemclose = ls.getItem("fast-adv-system-close");
 
     if (ls.getItem("fast-adv-maxline")) {
       document.getElementById("adv-maxline").value = ls.getItem("fast-adv-maxline");
@@ -892,6 +928,14 @@
     } else {
       document.getElementById("adv-system-msg").checked = true;
       Fast.adv.systemmsg = true;
+    }
+
+    if (ls.getItem("fast-adv-system-close") != 1) {
+      document.getElementById("adv-system-close").checked = false;
+      Fast.adv.systemclose= false;
+    } else {
+      document.getElementById("adv-system-close").checked = true;
+      Fast.adv.systemclose = true;
     }
     
     if (ls.getItem("fast-adv-animate") != 1) {
@@ -1011,6 +1055,12 @@
         document.getElementById("adv-system-msg").checked = false;
       } else {
         document.getElementById("adv-system-msg").checked = true;
+      }
+
+      if (Fast.adv.systemclose != 1) {
+        document.getElementById("adv-system-close").checked = false;
+      } else {
+        document.getElementById("adv-system-close").checked = true;
       }
 
       if (Fast.adv.animate != 1) {
@@ -1182,6 +1232,14 @@
       Fast.adv.systemmsg = false;
     }
 
+    if (document.getElementById("adv-system-close").checked == 1) {
+      ls_save("fast-adv-system-close", 1);
+      Fast.adv.systemclose = true;
+    } else {
+      ls_save("fast-adv-system-close", 0);
+      Fast.adv.systemclose = false;
+    }
+
     if (document.getElementById("adv-animate").checked == 1) {
       ls_save("fast-adv-animate", 1);
       Fast.adv.animate = true;
@@ -1236,6 +1294,15 @@
     } else {
       ls_save("fast-adv-maxspeak", 50);
       Fast.adv.maxspeak = 50;
+    }
+
+    if (Fast.adv.systemclose) {
+      window.onbeforeunload = function (event) {
+        event = event || window.event; 
+        event.returnValue = '他のページへ移動しますか？';
+      }
+    } else {
+        window.onbeforeunload = null;
     }
 
     ls_save_fast();
