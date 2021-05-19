@@ -10,7 +10,8 @@ fastcastはOBSのブラウザソース向けのレス表示機能です。
 
 - Fastインタフェースをレス表示のみに特化させた仕様なので読み上げ機能などはありません。
 - レス表示はしたいけど読み上げの機能は不要、あるいは別のソフトで行いたい。
-- 最新レスのみを数秒表示したい・・・などの用途を想定しています。
+- 最新レスのみを数秒表示したい
+- などの用途を想定しています。
 
 ### OBSブラウザソースの追加のやり方
 
@@ -31,9 +32,9 @@ https://bbs.jpnkn.com/{掲示板ID}/beta/fastcast/
 
 ### 字幕の色やフォントのカスタマイズ
 
-<img src="https://github.com/japankun/bbs.jpnkn.com/blob/master/upload/images/fastcast_customize-20210504.png" width="600">
+<img src="https://raw.githubusercontent.com/japankun/bbs.jpnkn.com/master/upload/images/fastcast_customize-20210504.png" width="600">
 
 - 字幕表示に関する設定は以下にて行なえます。
-- https://bbs.jpnkn.com/develop/beta/fastcast/custom
+- [https://bbs.jpnkn.com/develop/beta/fastcast/custom](https://bbs.jpnkn.com/develop/beta/fastcast/custom)
 - 設定内容は**OBSのブラウザソース内にあるカスタムCSSに貼り付ける**ことで反映されます。
 - フォントはOBSの動いているデバイス内にあるフォントを指定することができます。
