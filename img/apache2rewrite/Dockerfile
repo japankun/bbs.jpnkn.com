@@ -15,7 +15,7 @@ COPY apcu.ini /usr/local/etc/php/conf.d/apcu.ini
 
 # install & setting memcached
 RUN pecl install memcached
-COPY memcached.ini /local/etc/php/conf.d/memcached.ini
+COPY memcached.ini /usr/local/etc/php/conf.d/memcached.ini
 
 # install & setting mongodb
 RUN pecl install mongodb
