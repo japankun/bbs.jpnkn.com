@@ -20,4 +20,4 @@ sort: 4
 ﾜｯﾁｮｲ有りスレッドでは名前に妙なニックネーム(ﾜｯﾁｮｲ、ｽﾌﾟｰなど)とKOROKORO(4桁-4桁のID)が自動的に付加されます。
 
 詳しい仕様についてはこちら
-https://github.com/japankun/bbs.jpnkn.com/wiki/%EF%BE%9C%EF%BD%AF%EF%BE%81%EF%BD%AE%EF%BD%B2
+https://r.jpnkn.com/3Brc5oV
