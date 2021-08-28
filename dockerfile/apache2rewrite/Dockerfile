@@ -4,8 +4,7 @@ RUN a2enmod rewrite && a2enmod cache && a2enmod cache_disk & a2enmod headers
 RUN apt-get update && apt-get install -y zlib1g-dev libzip-dev libmemcached-dev unzip libssl-dev
 
 RUN docker-php-ext-install opcache && \
-  docker-php-ext-install zip && \
-  docker-php-ext-install redis
+  docker-php-ext-install zip
 
 # opcache
 COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
@@ -21,5 +20,9 @@ COPY memcached.ini /usr/local/etc/php/conf.d/memcached.ini
 # install & setting mongodb
 RUN pecl install mongodb
 COPY mongodb.ini /usr/local/etc/php/conf.d/mongodb.ini
+
+# install & setting redis
+RUN pecl install redis
+COPY redis.ini /usr/local/etc/php/conf.d/redis.ini
 
 COPY 000-default.conf /etc/apache2/sites-available/
