@@ -1,0 +1,32 @@
+{
+  "name": "voicetext",
+  "version": "0.0.7",
+  "main": "lib/voicetext.js",
+  "description": "voicetext client",
+  "homepage": "https://github.com/pchw/node-voicetext",
+  "bugs": "https://github.com/pchw/voicetext/issues",
+  "author": {
+    "name": "pchw",
+    "email": "bump.luv@gmail.com",
+    "url": "http://pchw.github.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pchw/node-voicetext"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "keywords": [
+    "voicetext"
+  ],
+  "dependencies": {
+    "debug": "^4.3.2",
+    "superagent": "^6.1.0"
+  },
+  "engines": {
+    "node": "12.x"
+  }
+}
