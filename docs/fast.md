@@ -18,6 +18,10 @@ Fastインターフェースは板の書き込みをすべて表示する実況�
 
 ### 棒読みちゃん連携
 
+```warning
+最新のブラウザではセキュリティや接続先の制限が強化されたため動作しません。
+```
+
 [棒読みちゃん用のWebSocket受付プラグイン](https://github.com/xztaityozx/BouyomiChan-WebSocket-Plugin)を使用すると棒読みちゃんに読み上げさせることができます。
 AquesTalk、VW Misakiなどの声質を使用したい場合に利用できます。
 
