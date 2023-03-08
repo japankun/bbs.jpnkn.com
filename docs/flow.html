@@ -331,6 +331,11 @@
   const mqttNodeList = 'https://cdn.bbs.jpnkn.com/io/mq-server.json?t=' + new Date().getTime();
   const vt_api_server = 'https://vt.api.jpnkn.com/';
   const voiceSelect = document.querySelector('#voice-select');
+  
+  if (window.Worker) {
+    var ttsWorker = new Worker('worker.js');
+    console.log("[Worker] Start");
+  }
 
   var ls = localStorage;
   var synth = window.speechSynthesis;
@@ -395,7 +400,20 @@
   });
 
   // TTS queue
-  setInterval(ttsqueue, 500);
+  if (window.Worker) {
+
+    ttsWorker.postMessage("Main: Message polling Start Signal.");
+
+    // WebWorker 対応ブラウザはここで待ち受けが始まります。
+    // バックグラウンドのsetIntervalのスロットリング対策。
+    // https://developer.mozilla.org/ja/docs/Web/API/setTimeout#%E9%81%85%E5%BB%B6%E3%81%8C%E6%8C%87%E5%AE%9A%E5%80%A4%E3%82%88%E3%82%8A%E9%95%B7%E3%81%84%E7%90%86%E7%94%B1
+    ttsWorker.onmessage = (e) => {
+      ttsqueue();
+    }
+
+  } else {
+    setInterval(ttsqueue, 500);
+  }
 
   /**
   * Functions
