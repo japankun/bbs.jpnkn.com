@@ -8,15 +8,15 @@ sort: 9
 
 #### CPU
 
-[![graph](https://mackerel.io/embed/public/embed/osKMEBJJPEXqftBUEgHhTlef8n7GP0fS04VQZh4DDH65kExwx7gQGIAUgeBkBoQm.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/4hcdrdTJcsh/-/graphs/cpu#period=1d)
+[![graph](https://mackerel.io/embed/public/embed/LB0ev2A6E4oacglBG2bA3uG2NBO50lIqoE9AXsI2GmHGwjTZqDZH8TVGkk1vVH79.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/4VxphywFzib/-/graphs/cpu#period=1d)
 
 #### LoadAverage
 
-[![graph](https://mackerel.io/embed/public/embed/I6AdTH1GLo7uOoXing0fa3BfyqUCRj28UY9FkfqfrmOcA0JOzu6uVgJ1VjcA5gaD.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/4hcdrdTJcsh/-/graphs/loadavg#period=1d)
+[![graph](https://mackerel.io/embed/public/embed/0nlQmYN21axZg7VIp8ZQq0bGWW66CRwY7lvFnxoCq3cZcsb8swnQEIrNoDCYGo94.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/4VxphywFzib/-/graphs/loadavg#period=1d)
 
 #### Memory
 
-[![graph](https://mackerel.io/embed/public/embed/1N9a9aXGUzeYxwm6sP2LVmrp5LDubfUHDsUH3T6rCw6TfuftUMvTkuLNFCcKVwqx.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/4hcdrdTJcsh/-/graphs/memory#period=1d)
+[![graph](https://mackerel.io/embed/public/embed/5MA5lOnrTGPoS1oVP8iWj2XkEJou5mgOPfkZYP42RZz5S1SJBzoJ8nHa5BUpkb05.png?period=1d)](https://mackerel.io/orgs/jpn/hosts/4VxphywFzib/-/graphs/memory#period=1d)
 
 ### BACKENDサーバー
 
