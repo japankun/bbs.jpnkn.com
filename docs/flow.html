@@ -784,7 +784,8 @@
       uttr.voice = synth
         .getVoices()
         .filter(voice => voice.name === voiceSelect.value)[0];
-      
+
+      synth.cancel();
       synth.speak(uttr);
 
     }
