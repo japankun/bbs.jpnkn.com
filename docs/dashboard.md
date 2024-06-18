@@ -4,6 +4,13 @@ sort: 9
 
 ## サーバーメトリクス
 
+### Post and Request
+
+- Post
+- Request (1min)
+
+[![graph](https://mackerel.io/embed/public/embed/Y6816IjqXQXU9o1OMQzGpUK1zOWqXYSezuxFmvIWV58gIkpDLCuWTSNs3iGdV7Hm.png?period=1d)](https://mackerel.io/orgs/jpn/services/post_and_request/-/graphs?name=bbs.%2a#period=1d)
+
 ### メインサーバー
 
 #### CPU
