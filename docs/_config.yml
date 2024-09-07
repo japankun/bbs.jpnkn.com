@@ -2,6 +2,6 @@ header_pages:
   - new.md
   - setting.md
 
-remote_theme: carlosperate/jekyll-theme-rtd
+remote_theme: japankun/jekyll-theme-rtd
 
 theme: jekyll-theme-cayman
