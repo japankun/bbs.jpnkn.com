@@ -54,7 +54,9 @@ sort: 2
 下記のプロバイダーはホスト名が割り当てられていないため、利便性を重視しこの規制の影響を受けません。
 ```
 - 楽天モバイル(一部)
-- LinksMate
+- AS59129 LinksMate / LogicLinks, Inc
+- AS17683 Wingtechnology Communications, Inc.
+- AS59107 Hachinohe Cable Television Co.
 
 ### 海外規制
 
